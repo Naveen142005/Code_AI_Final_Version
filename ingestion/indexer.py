@@ -2,10 +2,8 @@
 import ast
 import os
 from collections import defaultdict
-from utils import safe_name, get_docstring, calculate_complexity
-
-
-
+from ingestion.utils import safe_name, get_docstring, calculate_complexity
+import config
 
 MAX_FUNCTION_LIMIT = 300  # Lines
 

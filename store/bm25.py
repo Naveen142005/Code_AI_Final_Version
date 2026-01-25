@@ -1,11 +1,7 @@
 import json
 import pickle,os
 from rank_bm25 import BM25Okapi
-
-INPUT_FILE = "semantic_graph_v2.json"
-OUTPUT_DIR = "./storage"
-BM25_OUTPUT_FILE = os.path.join(OUTPUT_DIR, "bm25_index.pkl")
-
+from config import *
 
 class BM25Builder:
     def __init__(self):
@@ -69,7 +65,7 @@ class BM25Builder:
                 corpus.append(tokens)
                 node_ids.append(node["id"])
                 
-        print(corpus)
+        # print(corpus)
         if not corpus:
             print ('[BM25] => No indexable content found')
             
@@ -86,13 +82,9 @@ class BM25Builder:
             pickle.dump(package, f)
 
             
-if __name__ == "__main__":
-    indexer = BM25Builder()
-    indexer.build()
-            
+  
             
             
             
         
         
-

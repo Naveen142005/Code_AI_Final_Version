@@ -1,9 +1,12 @@
 import os
 import json
 
-from analyzer import analyze_codebase
-from repo_loader import RepoLoader
-
+from ingestion.analyzer import analyze_codebase
+from ingestion.repo_loader import RepoLoader
+from store.bm25 import BM25Builder
+from store.graph import GraphBuilder
+from store.vector import VectorStoreBuilder
+ 
 
 REPO_PATH = "./temp_repo"
 OUTPUT_FILE = "semantic_graph_v2.json"
@@ -33,3 +36,11 @@ if __name__ == "__main__":
         print(f"   Definitions: {data['stats']['definitions']}")
         print(f"   Calls/Edges: {data['stats']['calls']}")
         
+    builder = GraphBuilder()
+    builder.build()
+    
+    indexer = BM25Builder()
+    indexer.build()
+
+    builder = VectorStoreBuilder()
+    builder.build()

@@ -4,13 +4,9 @@ import ast
 import builtins
 import networkx as nx
 from collections import defaultdict
+from ingestion.indexer import SemanticIndexer
 
-from indexer import SemanticIndexer
-
-IGNORE_DIRS = {
-    '.git', '__pycache__', 'venv', 'env', 'node_modules', 
-    'dist', 'tests', 'docs', 'site-packages', '.idea', '.vscode'
-}
+import config
 
 def analyze_codebase(root_path):
     print(f" [Analyzer] => Starting Deep Semantic Analysis: {root_path}")
@@ -23,7 +19,7 @@ def analyze_codebase(root_path):
     all_calls = [] 
 
     for root, dirs, files in os.walk(root_path):
-        dirs[:] = [d for d in dirs if d not in IGNORE_DIRS]
+        dirs[:] = [d for d in dirs if d not in config.IGNORE_DIRS]
 
         for f in files:
             if f.endswith(".py"):
