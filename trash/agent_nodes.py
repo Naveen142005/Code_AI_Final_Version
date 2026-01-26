@@ -4,7 +4,7 @@ import re
 from typing import Any, Dict
 from langchain_core.messages import SystemMessage, HumanMessage
 from agents.state import AgentState
-from config import llm
+from src.config import llm
 
 def node_listener(state: AgentState):
     raw_query = state.get("input", "").strip()
@@ -154,7 +154,7 @@ def node_router(state: AgentState) -> Dict[str, Any]:
 import json
 from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
 from state import AgentState
-from config import llm
+from src.config import llm
 from tools.registry import get_tools_by_name
 
 def node_worker(state: AgentState):

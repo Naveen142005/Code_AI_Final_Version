@@ -1,4 +1,4 @@
-from config import llm
+from src.config import llm
 from langchain_groq import ChatGroq
 from langchain_core.messages import HumanMessage
 
