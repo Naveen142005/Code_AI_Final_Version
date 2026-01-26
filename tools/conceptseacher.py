@@ -82,12 +82,4 @@ class ConceptSearchTool:
         #return top N
         return final_ranked_ids[:limit]
 
-if __name__ == "__main__":
-    tool = ConceptSearchTool()
-    
-    # Try a semantic query
-    results = tool.search("How the build is working in graph?")
-    print(f"\n🏆 Final Hybrid Results: {results}")
-        
-        
             
