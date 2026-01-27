@@ -7,7 +7,7 @@ from src.config import *
 class FileReader_:
     def __init__(self):
         self.root_path = os.path.abspath(config.REPO_PATH)
-        print(f"[File Reader] =>  Root: {self.root_path}")
+        # print(f"[File Reader] =>  Root: {self.root_path}")
         self.graph = None
         if os.path.exists(GRAPH_OUTPUT_FILE):
             with open(GRAPH_OUTPUT_FILE, "rb") as f:
@@ -40,16 +40,16 @@ class FileReader_:
         start_line = node_data.get('start', 0)
         end_line = node_data.get('end', 0)
         
-        print('+++++++++++++++++++++++++++++++++++++++')
-        print(node_data)
-        print (file_path)
-        print(start_line)
-        print(end_line)
-        print('+++++++++++++++++++++++++++++++++++++++')
+        # print('+++++++++++++++++++++++++++++++++++++++')
+        # print(node_data)
+        # print (file_path)
+        # print(start_line)
+        # print(end_line)
+        # print('+++++++++++++++++++++++++++++++++++++++')
         
         try:
             full_path = self._get_safe_path(file_path)
-            print (full_path)
+            # print (full_path).
             
             if not full_path.startswith(self.root_path):
                  return f"Error: Access denied. {file_path} is outside the repository."
@@ -67,8 +67,8 @@ class FileReader_:
 
             start_line = max(1, start_line) 
             end_line = min(len(lines), end_line)
-            print ('st',start_line)
-            print('end', end_line)
+            # print ('st',start_line)
+            # print('end', end_line)
             selected_lines = lines[start_line-1 : end_line]
 
             if with_lines:

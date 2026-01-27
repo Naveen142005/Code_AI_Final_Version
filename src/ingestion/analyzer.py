@@ -9,7 +9,7 @@ from src.ingestion.indexer import SemanticIndexer
 import src.config as config
 
 def analyze_codebase(root_path):
-    print(f" [Analyzer] => Starting Deep Semantic Analysis: {root_path}")
+    print(f" [Analyzer] => Starting Semantic Analysis: {root_path}")
 
     nodes = {}
     edges = []

@@ -9,7 +9,7 @@ import torch
 from src.config import *
 from src.model import *
 
-MAX_CHUNK_SIZE = 2000 
+MAX_CHUNK_SIZE = 3000 
 
 class VectorStoreBuilder:
     def __init__(self):
@@ -99,7 +99,7 @@ class VectorStoreBuilder:
             
             
             #if it is the larger code...
-            if len(code_content) > MAX_CHUNK_SIZE * 1.5:
+            if len(code_content) > MAX_CHUNK_SIZE :
                 chunks = self.splitter.split_text(code_content)
                 
                 for i, chunk in enumerate(chunks):

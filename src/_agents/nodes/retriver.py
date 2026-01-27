@@ -1,6 +1,8 @@
+import json
 import pickle
 from langchain_chroma import Chroma
 from src._agents.nodes.expand import expander
+from src._agents.nodes.final import Presenter
 from src._agents.nodes.grader import Grader
 from src.model import *
 from src.config import *
@@ -88,20 +90,22 @@ class retriver:
 if __name__ == '__main__':
     while True:
         r = retriver()
-        i = input('Enter the question')
+        i = input('Enter the question: ')
 
         
         p = r.search(i)
         
-        print('='*90)
-        print('Retrived' , p)
-        print('='*90)
+        # print('='*90)
+        # print('Retrived' , p)
+        # print('='*90)
         
-        ree = Grader().grade(i,p)
-        print ('Grader',ree)
-        print('='*90)
+        arr =   Grader().grade(i,p) 
         
-        print('expend' ,expander().expand(ree))
+        res = expander().expand(p[arr[0] - 1])
+        
+        fi = Presenter().final(i,res)
+        
+        print(fi)
         
         
         

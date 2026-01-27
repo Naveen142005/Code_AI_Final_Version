@@ -2,7 +2,7 @@
 import ast
 import os
 from collections import defaultdict
-from ingestion.utils import safe_name, get_docstring, calculate_complexity
+from src.ingestion.utils import safe_name, get_docstring, calculate_complexity
 import src.config as config
 
 MAX_FUNCTION_LIMIT = 300  # Lines
@@ -52,12 +52,13 @@ class SemanticIndexer(ast.NodeVisitor):
                 return self.scope_vars[scope][name]
             temp.pop()
         
-        # Global Registry Check
+        
         if "." in name:
             obj, attr = name.split(".", 1)
             obj_type = self._find_var_type(obj)
             if obj_type and obj_type in self.global_class_registry:
                  return self.global_class_registry[obj_type].get(attr)
+             
         return None
 
     def _resolve_import_path(self, module, level):

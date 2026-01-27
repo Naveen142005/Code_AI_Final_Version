@@ -1,25 +1,76 @@
 import operator
 from typing import Annotated, List, TypedDict, Union
 
-def manage_memory(existing: List, new: Union[List, str]): 
-    if new == "RESET": return [] 
-    return existing + new
-
 class AgentState(TypedDict):
-    chat_history: Annotated[List[str], manage_memory] 
-    context_focus: str 
 
     input: str
-    selected_tools: List[str]
+    query: str
+    
+    chat: bool
+    
+    research_results: str
     
     resolved_query: str
-    is_ok: bool
-
-    research_results: Annotated[List[str], manage_memory] 
-    diagram_results: Annotated[List[str], manage_memory]
+    prompt_final: str
     
-    retry_count: int
-    critique_reason: str
-    tool_history: List[str]
+    is_ok: bool
     
     final_response: str
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+# def manage_memory(existing: List, new: Union[List, str]): 
+#     if new == "RESET": return [] 
+#     return existing + new
+    
+    # chat_history: Annotated[List[str], manage_memory] 
+    # retry_count: int
+    # tool_history: List[str]
+    # critique_reason: str
+    # diagram_results: str
+    # context_focus: str 
