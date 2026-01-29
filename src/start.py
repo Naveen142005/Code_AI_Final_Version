@@ -7,10 +7,7 @@ from src.store.bm25 import BM25Builder
 from src.store.graph import GraphBuilder
 from src.store.vector import VectorStoreBuilder
  
-
-REPO_PATH = "./temp_repo"
-OUTPUT_FILE = "semantic_graph_v2.json"
-
+from src.config import *
 
 class Main:
     
@@ -22,16 +19,17 @@ class Main:
 
 
         loader = RepoLoader(repo_url)
+        loader.load(REPO_PATH)
         
         if not os.path.exists(REPO_PATH):
             print(f"Error: Path '{REPO_PATH}' does not exist.")
         else:
             data = analyze_codebase(REPO_PATH)
             
-            with open(OUTPUT_FILE, "w") as f:
+            with open(INPUT_FILE, "w") as f:
                 json.dump(data, f, indent=2)
 
-            print(f"   Graph saved to {OUTPUT_FILE}")
+            print(f"   Graph saved to {INPUT_FILE}")
             print(f"   Files: {data['stats']['files']}")
             print(f"   Definitions: {data['stats']['definitions']}")
             print(f"   Calls/Edges: {data['stats']['calls']}")
@@ -44,6 +42,5 @@ class Main:
 
         # builder = VectorStoreBuilder()
         # builder.build()
-        
-        
+
         

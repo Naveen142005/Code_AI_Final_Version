@@ -83,6 +83,7 @@ class retriver:
         
         final_ranked_ids = self.rank(vector_data, bm25_data)
         
+        print(final_ranked_ids)
         #return top N
         return final_ranked_ids[:limit]
 
@@ -103,6 +104,7 @@ if __name__ == '__main__':
         
         res = expander().expand(p[arr[0] - 1])
         
+        # print(res)
         fi = Presenter().final(i,res)
         
         print(fi)

@@ -14,11 +14,10 @@ class SemanticIndexer(ast.NodeVisitor):
         self.rel_path = rel_path
         self.module_name = rel_path.replace(".py", "").replace(os.sep, ".")
         self.global_class_registry = global_class_registry 
-
+        self.file_id = f"file::{rel_path}"
         self.scope_stack = [self.module_name]
         self.definitions = {}
         self.calls = []
-        
         self.context_stack = [] 
         self.scope_aliases = defaultdict(dict)
         self.scope_vars = defaultdict(dict)
@@ -145,7 +144,7 @@ class SemanticIndexer(ast.NodeVisitor):
         self.scope_stack.append(node.name)
         self.context_stack.append("function") 
         
-        # Handle Args
+        
         for arg in node.args.args:
             arg_type = "Unknown"
             if arg.annotation:
@@ -202,6 +201,9 @@ class SemanticIndexer(ast.NodeVisitor):
         scope = self._scope()
         resolved_target = raw_name
 
+        if len(self.scope_stack) == 1:
+            scope = self.file_id
+        
         if raw_name:
             alias_target = self._find_alias(raw_name)
             if alias_target != raw_name:

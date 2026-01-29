@@ -101,7 +101,7 @@ RETURN ONLY RAW JSON. NO OTHER TEXT."""
             index += 1
             
 
-        # print(my_prompt)
+        print(my_prompt)
         response= ''
         try:
             response = llm.invoke([
@@ -115,9 +115,8 @@ RETURN ONLY RAW JSON. NO OTHER TEXT."""
         # print("LLM answer = " , response.content)
         
         
-        
         if response:
-            # Check if response is already a string or has .content attribute
+            #check if response is already a string or has .content attribute
             if isinstance(response, str):
                 response_content = response
             else:
@@ -125,29 +124,24 @@ RETURN ONLY RAW JSON. NO OTHER TEXT."""
         else:
             response_content = None
 
-        # print("LLM answer =", response_content)
+        print("LLM answer =", response_content)
 
-        # Parse and extract values
         ok = False
         index = []
         reason = ""
 
         if response_content:
             try:
-                # Clean response in case of markdown formatting
                 content = response_content.strip()
                 
-                # Remove markdown code fences if present
                 if content.startswith("```"):
                     content = content.split("```")[1]
                     if content.startswith("json"):
                         content = content[4:]
                     content = content.strip()
                 
-                # Parse JSON
                 result = json.loads(content)
                 
-                # Extract values with validation
                 ok = result.get("ok", False)
                 index = result.get("index", [])
                 reason = result.get("reason", "")

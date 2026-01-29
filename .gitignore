@@ -6,4 +6,18 @@ src/storage
 ./semantic_graph_v2.json
 semantic_graph_v2.json
 
+
+src/temp_repo/
+temp_repo/
+src/storage/
+storage/
+
+
+src/semantic_graph_v2.json
+semantic_graph_v2.json
+*.pickle
+*.json
+
 .env
+__pycache__/
+*.pyc

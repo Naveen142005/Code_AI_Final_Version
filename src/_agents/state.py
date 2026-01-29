@@ -1,5 +1,6 @@
+
 import operator
-from typing import Annotated, List, TypedDict, Union
+from typing import Annotated, Any, List, Optional, TypedDict, Union,Dict
 
 class AgentState(TypedDict):
 
@@ -8,12 +9,14 @@ class AgentState(TypedDict):
     
     chat: bool
     
+    is_first: bool = False
+    
     research_results: str
     
     resolved_query: str
     prompt_final: str
     
-    is_ok: bool
+    is_ok: bool 
     
     final_response: str
     

@@ -1,60 +1,46 @@
+import json
 from langchain_core.messages import SystemMessage, HumanMessage
 from src.config import llm
+from src._agents.state import AgentState
 
 class Router:
-   
-       
+
+    
+    def __init__(self):
+        pass
+
+    def route(self, query: str) -> str:
         
-    def route(self, query: str) -> bool:
-        """
-        Determines if the query is a code-related question or a general question.
-        
-        Returns:
-            bool: True if code question, False if general question
-        """
-        
-        system_prompt = """You are a routing agent that determines if a user's query is about code or a general question.
+        system_prompt = """You are a Senior Technical Router. 
+Classify the user query into ONE of three categories:
 
-Analyze the user's query and respond with ONLY ONE WORD:
+1. **CODE**: The user is asking about a specific class, function, variable, or logic block.
+   - Keywords: "explain function", "how does the grader work", "what is vector store", "show me code for X"
 
-- "CODE" - if asking about specific functions, classes, methods, or code implementation
-- "CHAT" - if asking general questions, concepts, or casual conversation
 
-- "Explain the add_var function"
-- "How does the build method work?"
-- "What does the _scope function return?"
-- "Show me the VectorStoreBuilder class"
-- "What calls the _add_var function?"
+3. **CHAT**: General conversation or greetings.
+   - Keywords: "hi", "thanks", "hello", "goodbye"
 
-- "What is a vector database?"
-- "How do I install Python?"
-- "What are best practices for error handling?"
-- "Hello, how are you?"
-- "Explain what semantic indexing means"
-
-**RESPOND WITH ONLY ONE WORD: "CODE" OR "CHAT"**
+Output ONLY the category name: "CODE", "OVERVIEW", or "CHAT".
 """
 
-        user_message = f"Query: {query}"
-        
         try:
-            response = self.llm.invoke([
+            response = llm.invoke([
                 SystemMessage(content=system_prompt),
-                HumanMessage(content=user_message)
+                HumanMessage(content=f"Query: {query}")
             ])
             
-            if isinstance(response, str):
-                content = response
-            else:
-                content = response.content if hasattr(response, 'content') else str(response)
+            content = response.content.strip().upper()
             
-            content = content.strip().upper()
-            
+            # Robust extraction
+            print('-'*40)
             print (content)
+          
+            if "CODE" in content: return "CODE"
+            if "CHAT" in content: return "CHAT"
             
-            return content == "CHAT"
-            
-        except Exception as e:
-            print(f"Router error: {e}")
-            return False
+            return "CHAT"
 
+        except Exception as e:
+            print(f"[Router] => Error: {e}. Defaulting to CHAT.")
+            return "CHAT"
