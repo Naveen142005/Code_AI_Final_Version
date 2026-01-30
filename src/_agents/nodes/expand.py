@@ -97,10 +97,11 @@ class expander:
         
         #limit neighbors to 2 to save tokens
         parents = list(self.graph.predecessors(node_id))
-        relevant_parents = [p for p in parents if "external" not in self.graph.nodes[p].get("type", "")][:2]
+        relevant_parents = [p for p in parents if "external" not in self.graph.nodes[p].get("type", "")]
 
         children = list(self.graph.successors(node_id))
-        relevant_children = [c for c in children if "external" not in self.graph.nodes[c].get("type", "")][:2]
+        relevant_children = [c for c in children if "external" not in self.graph.nodes[c].get("type", "")]
+        print(relevant_children)
 
         parent_codes = self._fetch_context_code(relevant_parents)
         child_codes = self._fetch_context_code(relevant_children)

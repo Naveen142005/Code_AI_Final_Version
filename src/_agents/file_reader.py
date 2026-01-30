@@ -51,14 +51,18 @@ class FileReader_:
             if node_id not in self.graph.nodes: 
                 return f"Error: Node '{node_id}' not found in graph."
 
+        
         node_data = self.graph.nodes[node_id] 
+        print(node_data)
+        # print(node_data)
+        
         file_path = node_data.get('file', '')
         start_line = node_data.get('start', 1)
         end_line = node_data.get('end', None) 
         
         try:
             full_path = self._get_safe_path(file_path)
-            
+            print(full_path)
             
             if not os.path.abspath(full_path).startswith(self.root_path):
                  return f"Error: Access denied. {file_path} is outside the repository."
@@ -89,4 +93,5 @@ class FileReader_:
                 return "".join(selected_lines)
 
         except Exception as e:
-            return f"Error reading file: {str(e)}"
+            #  f"Error reading file: {str(e)}"
+            pass
