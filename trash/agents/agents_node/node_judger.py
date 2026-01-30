@@ -15,7 +15,7 @@ def node_judge(state: AgentState):
         print(f"[Judger] => max retries ({retry_count}) reached. forcing'PASS'.")
         return {
             "plan_step": "critique_complete",
-            "is_ok": True, 
+            "is_expendable": True, 
             "critique_reason": "Max retries exceeded. Providing best effort answer."
         }
 
@@ -86,13 +86,13 @@ def node_judge(state: AgentState):
     if is_passing:
         return {
             "plan_step": "critique_complete",
-            "is_ok": True,
+            "is_expendable": True,
             "critique_reason": "" 
         }
     else:
         return {
             "plan_step": "critique_complete", 
-            "is_ok": False,
+            "is_expendable": False,
             "retry_count": retry_count + 1,
             "critique_reason": reason,
             

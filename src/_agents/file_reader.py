@@ -49,7 +49,8 @@ class FileReader_:
         if node_id not in self.graph.nodes:
             node_id = self.correct_id(node_id)
             if node_id not in self.graph.nodes: 
-                return f"Error: Node '{node_id}' not found in graph."
+                print( f"Error: Node '{node_id}' not found in graph.")
+                return ''
 
         
         node_data = self.graph.nodes[node_id] 
@@ -65,10 +66,12 @@ class FileReader_:
             print(full_path)
             
             if not os.path.abspath(full_path).startswith(self.root_path):
-                 return f"Error: Access denied. {file_path} is outside the repository."
+                 print( f"Error: Access denied. {file_path} is outside the repository.")
+                 return ''
 
             if not os.path.exists(full_path):
-                return f"Error: File '{file_path}' not found."
+                print( f"Error: File '{file_path}' not found.")
+                return ''
 
             with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
                 lines = f.readlines()

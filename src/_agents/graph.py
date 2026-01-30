@@ -3,23 +3,21 @@ from src._agents.all_nodes import *
 from src._agents.state import AgentState
 
 def should_continue_after_grader(state: AgentState) -> str:
-    is_ok = state.get('is_ok', False)
-    
-    if is_ok:
+    is_expendable = state.get('is_expendable', False)
+    if is_expendable:
         return "expand" 
     else:
         return "presenter"
 
 
 def route_after_router(state: AgentState) -> str:
-    chat = state.get('chat', False)
+    res = state.get('router_response')
 
     print('_' * 90)
-    print (chat)
-    if chat:
-        return "general_assistant"  
-    else:
-        return "retriever"  
+    print (res)
+    if res == 'CODE': return 'retriever'  
+    elif res == 'PROJECT' or res == 'FLOW': return 'architecturer'
+    return 'general_assistant'
 
 
 def start_after(state: AgentState) -> str:
@@ -45,11 +43,13 @@ def create_graph():
     workflow.add_node("build_bm25", build_bm25)
     workflow.add_node("build_graph", build_graph)
     workflow.add_node("router", router_node)
+    workflow.add_node('architecturer', architecture_node)
     workflow.add_node("retriever", retriver_node)
     workflow.add_node("grader", grader_node)
     workflow.add_node("expander", expander_node)
     workflow.add_node("presenter", presenter_node)
     workflow.add_node('general_assistant', general_assistant_node)
+    
     
    
     workflow.add_conditional_edges(
@@ -73,7 +73,8 @@ def create_graph():
         route_after_router,
         {
             "retriever": "retriever",
-            "general_assistant": "general_assistant"
+            "general_assistant": "general_assistant",
+            'architecturer': 'architecturer'
         }
     )
     
@@ -87,7 +88,7 @@ def create_graph():
             "presenter": "presenter"
         }
     )
-    
+    workflow.add_edge('architecturer', 'presenter')
     workflow.add_edge("expander", "presenter")
     workflow.add_edge("presenter", END)
     workflow.add_edge("general_assistant", END)

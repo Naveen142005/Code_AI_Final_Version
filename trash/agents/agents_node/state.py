@@ -13,7 +13,7 @@ class AgentState(TypedDict):
     selected_tools: List[str]
     
     resolved_query: str
-    is_ok: bool
+    is_expendable: bool
 
     research_results: Annotated[List[str], manage_memory] 
     diagram_results: Annotated[List[str], manage_memory]

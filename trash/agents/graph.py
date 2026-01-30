@@ -31,9 +31,9 @@ def route_from_brain(state: AgentState):
 
 def route_from_judge(state: AgentState):
  
-    is_ok = state.get("is_ok", False)
+    is_expendable = state.get("is_expendable", False)
     
-    if is_ok:
+    if is_expendable:
         print("[Graph] => Route: Quality PASS -> final")
         return "node_final"
     else:

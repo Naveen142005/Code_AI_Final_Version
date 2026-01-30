@@ -1,16 +1,18 @@
 
+from src._agents.architect_node.FlowDiagram import FlowDiagramGenerator
 from src._agents.nodes.expand import expander
 from src._agents.nodes.final import Presenter
 from src._agents.nodes.general import GeneralAssistant
 from src._agents.nodes.grader import Grader
 from src._agents.nodes.retriver import retriver
+
 from src._agents.nodes.router import Router
 from src._agents.state import AgentState
 from src.start import Main
 from src.store.bm25 import BM25Builder
 from src.store.graph import GraphBuilder
 from src.store.vector import VectorStoreBuilder
-
+from src.temp import ProjectSummarizer
 
 
 def repo_loader(state: AgentState) -> AgentState:
@@ -53,10 +55,10 @@ def build_graph(state: AgentState) -> AgentState:
 def router_node(state: AgentState) -> AgentState:
     """Route query to CODE or CHAT path"""
     query = state.get('query', '')
-    chat = (Router().route(query) == "CHAT")
+    res = Router().route(query)
     print ('=' * 90)
-    print(chat)
-    return {'chat': chat}  
+    print(res)
+    return {'router_response': res}  
 
 def retriver_node(state: AgentState) -> AgentState:
     """Retrieve relevant code blocks"""
@@ -74,13 +76,13 @@ def grader_node(state: AgentState) -> AgentState:
     results = state.get('research_results', [])
     
     grader_result = Grader().grade(query, results)
-    #grader_result = (is_ok, index, reason)
+    #grader_result = (is_expendable, index, reason)
     print ('grader result -> ', grader_result)
-    is_ok = grader_result[0]
+    is_expendable = grader_result[0]
     
     return {
         'resolved_query': grader_result,
-        'is_ok': is_ok
+        'is_expendable': is_expendable
     }
 
 
@@ -95,21 +97,27 @@ def expander_node(state: AgentState) -> AgentState:
     node_id = results[idx[0] - 1]
     
     expanded = expander().expand(node_id)
-    return {'prompt_final': expanded['formatted_explanation']}
+    return {'explanation_prompt': expanded['formatted_explanation']}
 
 
 def presenter_node(state: AgentState) -> AgentState:
     """Generate final explanation"""
     query = state.get('query', '')
     
-    is_ok = state.get('is_ok')
+    router_response = state.get('router_response')
     
-    if is_ok:
-        prompt = state.get('prompt_final', '')
-        response = Presenter().final(query, prompt)
+    if router_response == "CODE":
+        is_expendable = state.get('is_expendable')
+        if is_expendable:
+            prompt = state.get('explanation_prompt', '')
+            response = Presenter().explanation_response(query, prompt)
+        else:
+            ans = state.get('resolved_query')
+            response = ans[2] 
     else:
-        ans = state.get('resolved_query')
-        response = ans[2]
+        prompt = state.get('overview_prompt', '')
+        response = Presenter().overview_response(prompt)
+        
     
     return {'final_response': response}
 
@@ -121,3 +129,20 @@ def general_assistant_node(state: AgentState) -> AgentState:
     response = assistant.respond(query)
     
     return {'final_response': response}
+
+def architecture_node(state: AgentState) -> AgentState:
+    query = state.get('query', '')
+    router_response = state.get('router_response', '')
+    
+    if router_response == 'PROJECT':
+        summarizer = ProjectSummarizer()
+        context = summarizer.get_context()
+        return {'overview_prompt': context}
+    else:
+        generator = FlowDiagramGenerator()
+        prompt = generator.generate_prompt()
+        return {'overview_prompt': prompt}
+
+
+    
+    

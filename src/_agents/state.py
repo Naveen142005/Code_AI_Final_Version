@@ -1,24 +1,26 @@
 
 import operator
-from typing import Annotated, Any, List, Optional, TypedDict, Union,Dict
+from typing import  TypedDict
 
 class AgentState(TypedDict):
 
-    input: str
-    query: str
+    input: str #Repo_Url
+    query: str #User Query
     
-    chat: bool
+    router_response: str   #Router response  
     
-    is_first: bool = False
+    is_first: bool = False #is it first time repo loading ? or already repo loaded ?
     
-    research_results: str
+    research_results: str # Explanation chunks releated to the query
     
-    resolved_query: str
-    prompt_final: str
     
-    is_ok: bool 
+    overview_prompt: str #Over view question's Prompt
+    resolved_query: str #Storing most releated chunk to the query for expending
+    explanation_prompt: str #Code explanation prompt
+     
+    is_expendable: bool 
     
-    final_response: str
+    final_response: str #Final result
     
     
     

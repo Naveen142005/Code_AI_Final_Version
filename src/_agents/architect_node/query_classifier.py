@@ -1,7 +1,7 @@
 import json
 from langchain_core.messages import SystemMessage, HumanMessage
-from src._agents.architect_node.diagram import DiagramGenerator
-from src._agents.architect_node.graph_analyzer import GraphAnalyzer
+from src._agents.architect_node.overview import DiagramGenerator
+from src._agents.architect_node.FlowDiagram import GraphAnalyzer
 from src._agents.architect_node.presenter import ArchitectPresenter
 from src.config import llm
 from src._agents.state import AgentState

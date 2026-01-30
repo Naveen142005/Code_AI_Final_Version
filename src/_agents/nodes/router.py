@@ -1,46 +1,42 @@
-import json
-from langchain_core.messages import SystemMessage, HumanMessage
 from src.config import llm
-from src._agents.state import AgentState
 
 class Router:
-
-    
     def __init__(self):
-        pass
+        self.system_prompt = """You are a Senior Technical Router. 
+Classify the user query into ONE of these categories:
 
-    def route(self, query: str) -> str:
-        
-        system_prompt = """You are a Senior Technical Router. 
-Classify the user query into ONE of three categories:
+1. **CODE**: Asking about specific classes, functions, variables, or code blocks.
+   - Examples: "What does process_data() do?", "Show me the login function"
 
-1. **CODE**: The user is asking about a specific class, function, variable, or logic block.
-   - Keywords: "explain function", "how does the grader work", "what is vector store", "show me code for X"
+2. **PROJECT**: Asking about the overall project purpose and what it does.
+   - Examples: "What does this project do?", "Explain this project", "Project overview"
 
+3. **FLOW**: Asking about execution flow, architecture, or how things connect.
+   - Examples: "Show me the flow", "How does it work?", "Explain the architecture", "Flow diagram"
 
-3. **CHAT**: General conversation or greetings.
-   - Keywords: "hi", "thanks", "hello", "goodbye"
+4. **CHAT**: General conversation, greetings, or non-technical queries.
+   - Examples: "Hi", "Thanks", "Hello"
 
-Output ONLY the category name: "CODE", "OVERVIEW", or "CHAT".
+Output ONLY: "CODE", "PROJECT", "FLOW", or "CHAT".
 """
 
-        try:
-            response = llm.invoke([
-                SystemMessage(content=system_prompt),
-                HumanMessage(content=f"Query: {query}")
-            ])
-            
-            content = response.content.strip().upper()
-            
-            # Robust extraction
-            print('-'*40)
-            print (content)
-          
-            if "CODE" in content: return "CODE"
-            if "CHAT" in content: return "CHAT"
-            
-            return "CHAT"
-
-        except Exception as e:
-            print(f"[Router] => Error: {e}. Defaulting to CHAT.")
-            return "CHAT"
+    def route(self, user_query):
+        """Routes the query to appropriate handler"""
+        
+        query_lower = user_query.lower()
+    
+        if any(word in query_lower for word in ['hi', 'hello', 'hey', 'thanks', 'thank you']):
+            return 'CHAT'
+        if any(phrase in query_lower for phrase in ['flow', 'diagram', 'architecture', 'call graph']):
+            return 'FLOW'
+        if any(phrase in query_lower for phrase in ['what does this project', 'explain this project', 'project overview', 'what is this project']):
+            return 'PROJECT'
+        response = llm.invoke([
+            {"role": "system", "content": self.system_prompt},
+            {"role": "user", "content": user_query}    ])
+        
+        category = response.content.strip().upper()
+    
+        if category not in ['CODE', 'PROJECT', 'FLOW', 'CHAT']:
+            return 'CODE'
+        return category

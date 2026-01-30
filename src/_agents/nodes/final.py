@@ -5,7 +5,7 @@ class Presenter:
     def __init__(self):
         pass
 
-    def final(self, query: str, built_prompt: str):
+    def explanation_response(self, query: str, built_prompt: str):
         
         system_prompt = """You are an expert code explanation assistant. Your task is to provide clear, comprehensive explanations of code based on the user's query and the provided code context.
 
@@ -69,6 +69,19 @@ Please provide a comprehensive explanation of this code that answers the user's 
             ])
             
             # Handle response based on type
+            if isinstance(response, str):
+                return response
+            else:
+                return response.content if hasattr(response, 'content') else str(response)
+                
+        except Exception as e:
+            return f"Error generating explanation: {str(e)}"
+    
+    def overview_response(self, prompt: str):
+        
+        try:
+            response = llm.invoke(prompt)
+            # andle response based on type
             if isinstance(response, str):
                 return response
             else:
