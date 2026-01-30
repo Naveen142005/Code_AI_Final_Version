@@ -130,7 +130,7 @@ class VectorStoreBuilder:
             
             if not code_content.strip(): continue
 
-            # Handle modules , functions
+            #handle modules , functions
             if node["type"] == "module":
                 final_content = self.get_skeleton_code(code_content)
                 header = f"FILE_CONTEXT: {node['file']}\n(Contains Imports, Globals, and Script Logic)\n"

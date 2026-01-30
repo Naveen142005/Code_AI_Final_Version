@@ -8,7 +8,7 @@ from src._agents.nodes.retriver import retriver
 
 from src._agents.nodes.router import Router
 from src._agents.state import AgentState
-from src.start import Main
+from src.ingestion.repo_loader import RepoLoader
 from src.store.bm25 import BM25Builder
 from src.store.graph import GraphBuilder
 from src.store.vector import VectorStoreBuilder
@@ -19,17 +19,17 @@ def repo_loader(state: AgentState) -> AgentState:
     """Load repository and start ingestion"""
     repo_url = state.get('input', '')
     print ("Repo Url => " ,repo_url)
-    # if not repo_url:
-    #     repo_url = input('[Repo Loader] => Enter GitHub URL: ').strip()
+
     if repo_url:
-        start = Main()
-        start.main(repo_url)
+        start = RepoLoader()
+        start.load(repo_url)
     
     return {'input': repo_url}
 
 
 def build_vector(state: AgentState) -> AgentState:
     """Build vector store"""
+    
     print("[Vector Store] Building...")
     builder = VectorStoreBuilder()
     builder.build()
@@ -56,8 +56,7 @@ def router_node(state: AgentState) -> AgentState:
     """Route query to CODE or CHAT path"""
     query = state.get('query', '')
     res = Router().route(query)
-    print ('=' * 90)
-    print(res)
+   
     return {'router_response': res}  
 
 def retriver_node(state: AgentState) -> AgentState:

@@ -31,9 +31,6 @@ DEPENDENCY_MAP_FILE = os.path.join(STORAGE_DIR, "dependency_map.json")
 GRAPH_OUTPUT_FILE = os.path.join(STORAGE_DIR, "structure_graph.pkl")
 
 
-
-
-
 IGNORE_DIRS = {
     '.git', '__pycache__', 'venv', 'env', 'node_modules', 
     'dist', 'tests', 'docs', 'site-packages', '.idea', '.vscode',
@@ -54,10 +51,6 @@ llm = ChatGroq(
 )
 
 def get_repo_path():
-    """
-    Returns the absolute path where the repo is/will be cloned.
-    Ensures the directory structure exists.
-    """
     if not os.path.exists(REPO_PATH):
         os.makedirs(REPO_PATH, exist_ok=True)
     return REPO_PATH

@@ -14,7 +14,7 @@ def analyze_codebase(root_path):
     nodes = {}
     edges = []
     
-    global_class_registry = {}
+    all_class = {}
     all_defs = {} 
     all_calls = [] 
 
@@ -48,7 +48,7 @@ def analyze_codebase(root_path):
                     tree = ast.parse(content)
                     
                     #traverse in the tree get the function, class
-                    idx = SemanticIndexer(full_path, rel_path, global_class_registry)
+                    idx = SemanticIndexer(full_path, rel_path, all_class)
                     idx.visit(tree)
  
                     all_defs.update(idx.definitions)
@@ -91,15 +91,15 @@ def analyze_codebase(root_path):
         if target in all_defs: #checking the function called i same file
             matches.append(target) 
         
-        if not matches:
-            candidates = [k for k in all_defs if k.endswith(f".{target}")]
+        if not matches:  #if not same file, import check
+            candidates = [k for k in all_defs if k.endswith(f".{target}")] 
             if candidates:
                 matches = candidates[:1]
         
         if not matches and "." not in target:
             matches = name_lookup.get(target, [])
         
-        if not matches:
+        if not matches: #marking as external
             if target in dir(builtins): continue
             
             external_id = f"external::{target}"

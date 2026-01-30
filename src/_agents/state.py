@@ -9,7 +9,7 @@ class AgentState(TypedDict):
     
     router_response: str   #Router response  
     
-    is_first: bool = False #is it first time repo loading ? or already repo loaded ?
+    is_repo_loaded: bool = False #is it first time repo loading ? or already repo loaded ?
     
     research_results: str # Explanation chunks releated to the query
     

@@ -12,9 +12,6 @@ def should_continue_after_grader(state: AgentState) -> str:
 
 def route_after_router(state: AgentState) -> str:
     res = state.get('router_response')
-
-    print('_' * 90)
-    print (res)
     if res == 'CODE': return 'retriever'  
     elif res == 'PROJECT' or res == 'FLOW': return 'architecturer'
     return 'general_assistant'
@@ -22,22 +19,15 @@ def route_after_router(state: AgentState) -> str:
 
 def start_after(state: AgentState) -> str:
     """Only check if we have input (repo already loaded)"""
-    has_input = not (state.get('is_first'))
-    
-    print("=" * 40)
-    print(f"[START] Input exists: {has_input}")
-    print(f"[START] Route: {'router' if has_input else 'repo_loader'}")
-    print("=" * 40)
-    
+    has_input = state.get('is_repo_loaded')
     return 'router' if has_input else 'repo'
 
 
 def create_graph():
-    
 
     workflow = StateGraph(AgentState)
     
-   
+
     workflow.add_node("repo_loader", repo_loader)
     workflow.add_node("build_vector", build_vector)
     workflow.add_node("build_bm25", build_bm25)
@@ -51,7 +41,6 @@ def create_graph():
     workflow.add_node('general_assistant', general_assistant_node)
     
     
-   
     workflow.add_conditional_edges(
         START,
         start_after,

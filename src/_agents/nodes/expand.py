@@ -23,7 +23,7 @@ class expander:
         if not bad_id: return ""
         return bad_id.replace("/", ".").replace("\\", ".").replace(".py", "").replace("::", ".")
 
-    def _generate_stub(self, code_content):
+    def get_the_doc(self, code_content):
 
         try:
             if len(code_content.splitlines()) < 15:
@@ -64,15 +64,15 @@ class expander:
             lines = code_content.splitlines()
             return "\n".join(lines[:10]) + "\n# ... (Truncated) ..."
 
-    def _fetch_context_code(self, node_list):
+    def get_code(self, node_list):
         context_map = {}
         for node_id in node_list:
             full_code = self.reader.read_file(node_id)
             if full_code:
-                context_map[self._clean_node_id(node_id)] = self._generate_stub(full_code)
+                context_map[self._clean_node_id(node_id)] = self.get_the_doc(full_code)
         return context_map
 
-    def _format_code_section(self, code_dict, section_title):
+    def get_code_with_line(self, code_dict, section_title):
         if not code_dict:
             return f"**{section_title}:** None\n"
         
@@ -103,8 +103,8 @@ class expander:
         relevant_children = [c for c in children if "external" not in self.graph.nodes[c].get("type", "")]
         print(relevant_children)
 
-        parent_codes = self._fetch_context_code(relevant_parents)
-        child_codes = self._fetch_context_code(relevant_children)
+        parent_codes = self.get_code(relevant_parents)
+        child_codes = self.get_code(relevant_children)
 
         parent_names = [self._clean_node_id(p) for p in relevant_parents]
         child_names = [self._clean_node_id(c) for c in relevant_children]
@@ -118,9 +118,9 @@ FOCUS CODE (Full Content)
 {code_body}
 
 {'=' * 60}
-{self._format_code_section(parent_codes, "CALLED BY (Context)")}
+{self.get_code_with_line(parent_codes, "CALLED BY (Context)")}
 {'=' * 60}
-{self._format_code_section(child_codes, "CALLS TO (Context)")}
+{self.get_code_with_line(child_codes, "CALLS TO (Context)")}
 {'=' * 60}
 """
 

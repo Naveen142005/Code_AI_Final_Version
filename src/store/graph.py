@@ -38,6 +38,7 @@ class GraphBuilder:
         if not os.path.exists(INPUT_FILE):
             raise FileNotFoundError(f'Missing ingestion data')
         
+        #loading all nodes
         with open(INPUT_FILE, 'r') as f:
             data = json.load(f)
         
@@ -47,6 +48,7 @@ class GraphBuilder:
         print(f'[Graph] => Processing {len(nodes)} nodes with {len(edges)} edges')
         
         
+        #Creating nodes...
         for node in nodes:
             clean_id = self.correct_id(node['id'])
             self.graph.add_node(
@@ -67,14 +69,15 @@ class GraphBuilder:
                     tar = tar.split('::')[-1]
                 except:
                     pass            
-            src = self.correct_id(src)
-            tar = self.correct_id(tar)
             
-            is_internal_function = self.graph.has_node(tar)
+            src = self.correct_id(src) #making same graph soruce id
+            tar = self.correct_id(tar) #makeing same target id
+             
+            is_internal_function = self.graph.has_node(tar) # Checking whethere tar is our function or not.
             
             if not is_internal_function:
                 short_name = tar.split('.')[-1]
-                if self.is_builtin_name(short_name): 
+                if self.is_builtin_name(short_name):  # Passing external function
                     continue
             
             if tar == src: continue
@@ -82,6 +85,7 @@ class GraphBuilder:
             if "safe" in src or "safe" in tar:
                 print(f"  [Link] {src} --> {tar}")
             
+            #Creating the edges...
             self.graph.add_edge(
                 src,
                 tar,
@@ -89,6 +93,8 @@ class GraphBuilder:
                 context=edge.get('context', []) 
             )
             
+            
+            # Tracking for Dependency map, easy to access
             if edge['relation'] == 'calls':
                 if src not in outgoing_edge_map:
                     outgoing_edge_map[src] = []
@@ -103,25 +109,5 @@ class GraphBuilder:
         with open(DEPENDENCY_MAP_FILE, 'w') as f:
             json.dump(outgoing_edge_map, f, indent=2)
             
-        
-        self.print_stats()
+
         print('[Graph] => Everything Completed !!')
-
-    def print_stats(self):
-        """Helper to print graph details nicely"""
-        print("\n" + "="*40)
-        print(f"📊 GRAPH STATS")
-        print("="*40)
-        print(f"Nodes: {self.graph.number_of_nodes()}")
-        print(f"Edges: {self.graph.number_of_edges()}")
-        print("-" * 40)
-        
-        print("\n🔍 SAMPLE NODES (First 5):")
-        for i, node in enumerate(list(self.graph.nodes())[:5]):
-            print(f"  {i+1}. {node}")
-
-        print("\n🔗 SAMPLE EDGES (First 5):")
-        for i, (u, v) in enumerate(list(self.graph.edges())[:5]):
-            print(f"  {i+1}. {u} --> {v}")
-        print("="*40 + "\n")
-
